@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mosaic Talent — AI-Powered Recruitment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b;
+    --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b;
+    --slate-900: #0f172a; --slate-950: #020617;
+    --emerald-50: #ecfdf5; --emerald-100: #d1fae5; --emerald-200: #a7f3d0;
+    --emerald-400: #34d399; --emerald-500: #10b981; --emerald-600: #059669;
+    --emerald-700: #047857; --emerald-800: #065f46;
+    --amber-50: #fffbeb; --amber-100: #fef3c7; --amber-400: #fbbf24;
+    --amber-500: #f59e0b; --amber-600: #d97706; --amber-700: #b45309;
+    --red-50: #fef2f2; --red-400: #f87171; --red-500: #ef4444; --red-600: #dc2626;
+    --blue-50: #eff6ff; --blue-400: #60a5fa; --blue-500: #3b82f6; --blue-600: #2563eb;
+    --violet-50: #f5f3ff; --violet-500: #8b5cf6; --violet-600: #7c3aed;
+    --orange-50: #fff7ed; --orange-500: #f97316;
+    --radius: 16px; --radius-lg: 24px; --radius-xl: 32px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--slate-50);
+    color: var(--slate-800);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { cursor: pointer; border: none; font-family: inherit; }
+  input, textarea, select { font-family: inherit; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--slate-100); }
+  ::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 99px; }
+
+  /* Layout */
+  #sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 232px;
+    background: var(--slate-950); display: flex; flex-direction: column;
+    z-index: 100; border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .sidebar-logo {
+    padding: 24px 20px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .logo-mark {
+    width: 40px; height: 40px; background: var(--emerald-500);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900; color: white; flex-shrink: 0;
+  }
+  .logo-text { line-height: 1.15; }
+  .logo-text strong { display: block; color: white; font-weight: 900; font-size: 17px; letter-spacing: -0.3px; }
+  .logo-text span { color: var(--emerald-400); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; }
+  .sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border-radius: 12px;
+    color: var(--slate-400); font-size: 13.5px; font-weight: 600;
+    transition: all 0.15s; text-decoration: none; background: none;
+    width: 100%; text-align: left;
+  }
+  .nav-item:hover { color: white; background: rgba(255,255,255,0.06); }
+  .nav-item.active { background: rgba(16,185,129,0.12); color: var(--emerald-400); border: 1px solid rgba(16,185,129,0.2); }
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .sidebar-footer { padding: 16px 10px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .user-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; }
+  .user-avatar { width: 34px; height: 34px; background: var(--emerald-600); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: white; font-size: 14px; }
+  .user-name { color: white; font-size: 13px; font-weight: 700; }
+  .user-role { color: var(--slate-500); font-size: 11px; }
+
+  #main { margin-left: 232px; min-height: 100vh; }
+  .page { display: none; padding: 36px 40px; max-width: 1200px; }
+  .page.active { display: block; }
+
+  /* Candidate Test Page */
+  #page-test { margin-left: 0; padding: 0; max-width: none; display: none; }
+  #page-test.active { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* Typography */
+  .page-title { font-size: 30px; font-weight: 900; color: var(--slate-900); letter-spacing: -0.5px; }
+  .page-sub { color: var(--slate-400); font-size: 14px; margin-top: 3px; }
+  h2 { font-size: 20px; font-weight: 800; color: var(--slate-900); }
+  h3 { font-size: 15px; font-weight: 700; color: var(--slate-700); }
+
+  /* Cards */
+  .card {
+    background: white; border-radius: var(--radius); border: 1px solid var(--slate-100);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .card-p { padding: 24px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 22px; border-radius: 12px; font-size: 14px; font-weight: 700;
+    transition: all 0.15s; line-height: 1;
+  }
+  .btn-primary { background: var(--emerald-600); color: white; }
+  .btn-primary:hover { background: var(--emerald-700); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(16,185,129,0.2); }
+  .btn-primary:disabled { opacity: 0.45; transform: none; box-shadow: none; cursor: not-allowed; }
+  .btn-dark { background: var(--slate-900); color: white; }
+  .btn-dark:hover { background: var(--slate-800); }
+  .btn-outline { background: white; color: var(--slate-700); border: 1.5px solid var(--slate-200); }
+  .btn-outline:hover { background: var(--slate-50); border-color: var(--slate-300); }
+  .btn-ghost { background: none; color: var(--slate-400); padding: 11px 0; }
+  .btn-ghost:hover { color: var(--slate-800); }
+  .btn-sm { padding: 7px 14px; font-size: 12px; border-radius: 10px; }
+  .btn-lg { padding: 16px 32px; font-size: 16px; border-radius: 14px; }
+  .btn-danger { background: var(--red-50); color: var(--red-600); border: 1.5px solid #fecaca; }
+  .btn-danger:hover { background: var(--red-500); color: white; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex; align-items: center; padding: 3px 10px;
+    border-radius: 99px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.03em; text-transform: uppercase; border: 1px solid transparent;
+  }
+  .badge-emerald { background: var(--emerald-50); color: var(--emerald-700); border-color: var(--emerald-200); }
+  .badge-amber   { background: var(--amber-50);   color: var(--amber-700);   border-color: var(--amber-100); }
+  .badge-red     { background: var(--red-50);     color: var(--red-600);     border-color: #fecaca; }
+  .badge-blue    { background: var(--blue-50);    color: var(--blue-600);    border-color: #bfdbfe; }
+  .badge-violet  { background: var(--violet-50);  color: var(--violet-600);  border-color: #ddd6fe; }
+  .badge-slate   { background: var(--slate-100);  color: var(--slate-600);   border-color: var(--slate-200); }
+  .badge-orange  { background: var(--orange-50);  color: var(--orange-500);  border-color: #fed7aa; }
+
+  /* Form elements */
+  .input, .textarea {
+    width: 100%; padding: 12px 16px; border-radius: 12px;
+    border: 1.5px solid var(--slate-200); font-size: 14px; color: var(--slate-800);
+    transition: all 0.15s; outline: none; font-family: inherit;
+    background: white;
+  }
+  .input::placeholder, .textarea::placeholder { color: var(--slate-300); }
+  .input:focus, .textarea:focus { border-color: var(--emerald-500); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
+  .textarea { resize: none; line-height: 1.6; }
+  label.field-label { display: block; font-size: 12px; font-weight: 800; color: var(--slate-600); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+
+  /* Steps */
+  .steps { display: flex; align-items: center; gap: 0; }
+  .step-item { display: flex; align-items: center; }
+  .step-circle {
+    width: 32px; height: 32px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 13px; font-weight: 800;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .step-circle.done   { background: var(--emerald-500); color: white; }
+  .step-circle.active { background: var(--slate-900); color: white; box-shadow: 0 0 0 3px rgba(16,185,129,0.25); }
+  .step-circle.pending{ background: var(--slate-100); color: var(--slate-400); }
+  .step-label { font-size: 13px; font-weight: 600; margin-left: 8px; margin-right: 16px; transition: color 0.2s; }
+  .step-label.done    { color: var(--emerald-600); }
+  .step-label.active  { color: var(--slate-900); }
+  .step-label.pending { color: var(--slate-400); }
+  .step-line { width: 32px; height: 1px; background: var(--slate-200); margin-right: 16px; flex-shrink: 0; }
+  .step-line.done { background: var(--emerald-300); }
+
+  /* Score bar */
+  .score-bar { width: 100%; background: var(--slate-100); border-radius: 99px; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: rgba(248,250,252,0.8); }
+  th { padding: 14px 18px; text-align: left; font-size: 10px; font-weight: 800; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.12em; white-space: nowrap; border-bottom: 1px solid var(--slate-100); }
+  td { padding: 14px 18px; font-size: 13.5px; border-bottom: 1px solid var(--slate-50); vertical-align: middle; }
+  tbody tr { transition: background 0.1s; }
+  tbody tr:hover { background: var(--slate-50); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  /* Stats grid */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat-card { background: white; border-radius: var(--radius); border: 1px solid var(--slate-100); padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .stat-icon { font-size: 22px; margin-bottom: 12px; }
+  .stat-label { font-size: 12px; font-weight: 600; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.06em; }
+  .stat-value { font-size: 32px; font-weight: 900; color: var(--slate-900); margin-top: 3px; letter-spacing: -1px; }
+  .stat-sub { font-size: 12px; color: var(--slate-400); margin-top: 3px; }
+
+  /* Spinner */
+  .spinner {
+    width: 20px; height: 20px; border: 2.5px solid var(--emerald-200);
+    border-top-color: var(--emerald-600); border-radius: 50%; animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+  .spinner-lg { width: 44px; height: 44px; border-width: 4px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Alert boxes */
+  .alert { padding: 14px 18px; border-radius: 14px; display: flex; align-items: flex-start; gap: 12px; font-size: 13.5px; }
+  .alert-error  { background: var(--red-50);   border: 1px solid #fecaca; color: var(--red-600); }
+  .alert-success{ background: var(--emerald-50);border: 1px solid var(--emerald-200);color: var(--emerald-700);}
+  .alert-warning{ background: var(--amber-50); border: 1px solid var(--amber-100); color: var(--amber-700); }
+  .alert-info   { background: var(--blue-50);  border: 1px solid #bfdbfe;  color: var(--blue-600); }
+  .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: -1px; }
+  .alert-close { margin-left: auto; cursor: pointer; opacity: 0.5; font-size: 18px; line-height: 1; background: none; border: none; color: inherit; flex-shrink: 0; }
+  .alert-close:hover { opacity: 1; }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px); z-index: 1000;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal-box {
+    background: white; border-radius: var(--radius-xl);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.2), 0 8px 20px rgba(0,0,0,0.1);
+    width: 100%; max-width: 860px; max-height: 90vh;
+    display: flex; flex-direction: column;
+    transform: scale(0.95); transition: transform 0.2s;
+  }
+  .modal-overlay.open .modal-box { transform: scale(1); }
+  .modal-header { padding: 24px 28px; border-bottom: 1px solid var(--slate-100); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: var(--slate-50); border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+  .modal-body   { flex: 1; overflow-y: auto; padding: 28px; }
+  .modal-close  { width: 34px; height: 34px; border-radius: 50%; background: var(--slate-100); border: none; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; color: var(--slate-500); transition: all 0.15s; line-height: 1; }
+  .modal-close:hover { background: var(--slate-200); color: var(--slate-800); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--slate-100); margin-bottom: 24px; }
+  .tab-btn { padding: 12px 18px; font-size: 13.5px; font-weight: 700; color: var(--slate-400); background: none; border: none; cursor: pointer; transition: color 0.15s; border-bottom: 2.5px solid transparent; margin-bottom: -1px; }
+  .tab-btn:hover { color: var(--slate-700); }
+  .tab-btn.active { color: var(--emerald-600); border-bottom-color: var(--emerald-500); }
+
+  /* Drop zone */
+  .drop-zone {
+    border: 2px dashed var(--slate-200); border-radius: var(--radius-lg);
+    padding: 48px 32px; text-align: center; transition: all 0.2s; cursor: pointer;
+    background: var(--slate-50);
+  }
+  .drop-zone:hover, .drop-zone.dragging { border-color: var(--emerald-400); background: var(--emerald-50); }
+  .drop-zone-icon { font-size: 48px; margin-bottom: 12px; }
+  .drop-zone h3 { font-size: 16px; font-weight: 800; color: var(--slate-800); }
+  .drop-zone p  { font-size: 13px; color: var(--slate-400); margin-top: 4px; }
+
+  /* Bloom tag */
+  .bloom-tag {
+    display: inline-flex; flex-direction: column; align-items: flex-start;
+    padding: 8px 12px; border-radius: 10px; background: var(--slate-50);
+    border: 1px solid var(--slate-100);
+  }
+  .bloom-tag .skill-name { font-size: 12px; font-weight: 700; color: var(--slate-700); }
+  .bloom-tag .bloom-level { font-size: 10px; color: var(--slate-400); margin-top: 2px; font-weight: 600; }
+
+  /* Question card */
+  .q-card {
+    padding: 16px 20px; border-bottom: 1px solid var(--slate-50);
+    transition: background 0.1s;
+  }
+  .q-card:last-child { border-bottom: none; }
+  .q-card:hover { background: var(--slate-50); }
+  .q-num { width: 26px; height: 26px; border-radius: 8px; background: var(--slate-100); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: var(--slate-500); flex-shrink: 0; }
+  .mcq-option {
+    padding: 12px 16px; border-radius: 12px; border: 2px solid var(--slate-100);
+    font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; gap: 12px; background: white;
+    color: var(--slate-600); text-align: left; width: 100%;
+  }
+  .mcq-option:hover { border-color: var(--slate-200); background: var(--slate-50); }
+  .mcq-option.selected { border-color: var(--emerald-500); background: var(--emerald-50); color: var(--emerald-800); font-weight: 700; }
+  .mcq-option.correct-preview { border-color: var(--emerald-300); background: var(--emerald-50); }
+  .opt-badge { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--slate-200); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0; transition: all 0.15s; }
+  .mcq-option.selected .opt-badge { border-color: var(--emerald-500); background: var(--emerald-500); color: white; }
+
+  /* Progress dots */
+  .progress-dots { display: flex; gap: 6px; align-items: center; }
+  .dot { height: 8px; border-radius: 99px; transition: all 0.25s; cursor: pointer; }
+  .dot.answered { background: var(--emerald-300); width: 8px; }
+  .dot.current  { background: var(--emerald-500); width: 24px; }
+  .dot.empty    { background: var(--slate-200); width: 8px; }
+
+  /* Score card */
+  .score-hero {
+    background: linear-gradient(135deg, var(--emerald-600) 0%, var(--emerald-800) 100%);
+    border-radius: var(--radius-lg); padding: 24px; color: white;
+    box-shadow: 0 8px 24px rgba(5,150,105,0.25);
+  }
+  .score-hero .label { font-size: 10px; font-weight: 800; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.12em; }
+  .score-hero .number { font-size: 64px; font-weight: 900; line-height: 1; letter-spacing: -3px; }
+  .score-hero .pct { font-size: 28px; font-weight: 500; opacity: 0.6; }
+
+  /* Candidate test */
+  .test-header {
+    background: white; border-bottom: 1px solid var(--slate-200);
+    padding: 14px 32px; display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .timer-badge {
+    font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500;
+    padding: 8px 16px; border-radius: 10px; background: var(--slate-100); color: var(--slate-700);
+  }
+  .timer-badge.danger { background: var(--red-50); color: var(--red-600); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+  /* Animations */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-up { animation: fadeUp 0.3s ease forwards; }
+
+  /* Parsing progress */
+  .parse-step { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+  .parse-step .step-status { font-size: 18px; width: 24px; text-align: center; }
+  .parse-step .step-text { font-size: 13px; font-weight: 600; color: var(--slate-700); }
+  .parse-step .step-text.pending { color: var(--slate-300); }
+
+  /* Difficulty chip */
+  .diff-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 700;
+  }
+  .diff-foundational { background: #dbeafe; color: #1d4ed8; }
+  .diff-applied       { background: #ede9fe; color: #6d28d9; }
+  .diff-advanced      { background: #fef3c7; color: #b45309; }
+  .diff-expert        { background: #fee2e2; color: #b91c1c; }
+
+  /* Hybrid banner */
+  .hybrid-banner {
+    background: linear-gradient(90deg, var(--violet-50) 0%, var(--blue-50) 100%);
+    border: 1px solid #ddd6fe; border-radius: 12px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px; font-size: 13px;
+  }
+
+  /* Analytics bar chart */
+  .bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 120px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+  .bar-fill { width: 100%; border-radius: 6px 6px 0 0; transition: height 0.6s ease; min-height: 4px; }
+  .bar-count { font-size: 13px; font-weight: 900; color: var(--slate-700); }
+  .bar-label { font-size: 10px; font-weight: 700; color: var(--slate-400); text-align: center; }
+
+  /* Misc */
+  .section-label { font-size: 10px; font-weight: 800; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; }
+  .divider { height: 1px; background: var(--slate-100); margin: 20px 0; }
+  .text-mono { font-family: 'DM Mono', monospace; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .flex { display: flex; }
+  .flex-col { display: flex; flex-direction: column; }
+  .items-center { align-items: center; }
+  .items-start { align-items: flex-start; }
+  .justify-between { justify-content: space-between; }
+  .gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; }
+  .mt-1 { margin-top: 4px; } .mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; }
+  .mt-4 { margin-top: 16px; } .mt-6 { margin-top: 24px; } .mt-8 { margin-top: 32px; }
+  .mb-4 { margin-bottom: 16px; } .mb-6 { margin-bottom: 24px; }
+  .wrap { flex-wrap: wrap; }
+  .full-w { width: 100%; }
+  .text-sm { font-size: 13px; } .text-xs { font-size: 11px; }
+  .fw-600 { font-weight: 600; } .fw-700 { font-weight: 700; } .fw-900 { font-weight: 900; }
+  .color-slate { color: var(--slate-500); } .color-emerald { color: var(--emerald-600); }
+  .color-red { color: var(--red-500); } .color-amber { color: var(--amber-600); }
+  .hidden { display: none !important; }
+  .text-center { text-align: center; }
+
+  @media (max-width: 768px) {
+    #sidebar { transform: translateX(-100%); }
+    #main { margin-left: 0; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">M</div>
+    <div class="logo-text">
+      <strong>Mosaic Talent</strong>
+      <span>AI Recruitment</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-page="generator" onclick="showPage('generator')">
+      <span class="nav-icon">✦</span> Generator
+    </button>
+    <button class="nav-item" data-page="dashboard" onclick="showPage('dashboard')">
+      <span class="nav-icon">◈</span> Dashboard
+    </button>
+    <button class="nav-item" data-page="analytics" onclick="showPage('analytics')">
+      <span class="nav-icon">◎</span> Analytics
+    </button>
+    <button class="nav-item" data-page="logs" onclick="showPage('logs')">
+      <span class="nav-icon">◷</span> System Logs
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-row">
+      <div class="user-avatar">R</div>
+      <div>
+        <div class="user-name">Recruiter</div>
+        <div class="user-role">Admin Access</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ════════ MAIN ════════ -->
+<div id="main">
+
+  <!-- ── PAGE: GENERATOR ── -->
+  <div id="page-generator" class="page active">
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="page-title">Assessment Generator</h1>
+        <p class="page-sub">AI-powered — JD to published assessment in under 60 seconds</p>
+      </div>
+    </div>
+
+    <div class="steps mb-8" id="gen-steps"></div>
+    <div id="gen-error" class="hidden mb-4"></div>
+    <div id="gen-loading" class="hidden mb-4"></div>
+    <div id="gen-step-content"></div>
+  </div>
+
+  <!-- ── PAGE: DASHBOARD ── -->
+  <div id="page-dashboard" class="page">
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="page-title">Recruiter Dashboard</h1>
+        <p class="page-sub">Live hiring pipeline overview</p>
+      </div>
+      <button class="btn btn-primary" onclick="showPage('generator')">
+        <span>✦</span> New Assessment
+      </button>
+    </div>
+    <div class="stats-grid mb-8" id="stats-grid"></div>
+    <div id="leaderboard-container"></div>
+  </div>
+
+  <!-- ── PAGE: ANALYTICS ── -->
+  <div id="page-analytics" class="page">
+    <h1 class="page-title mb-6">Analytics</h1>
+    <div id="analytics-content"></div>
+  </div>
+
+  <!-- ── PAGE: LOGS ── -->
+  <div id="page-logs" class="page">
+    <h1 class="page-title mb-6">System Logs</h1>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Timestamp</th><th>Event</th><th>User</th><th>Details</th>
+          </tr></thead>
+          <tbody id="logs-tbody"><tr><td colspan="4" style="text-align:center;color:var(--slate-300);padding:48px">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: TEST (Candidate) ── -->
+  <div id="page-test" class="page">
+    <!-- Injected by JS -->
+  </div>
+
+</div><!-- end #main -->
+
+<!-- ════════ CANDIDATE MODAL ════════ -->
+<div id="candidate-modal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-header" id="modal-header"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════════════════════════
+const GEMINI_KEY = "AIzaSyDCrwINEIGyVsf1SCnrbGyvr9WIAMDQmVc";
+const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
+// ═══════════════════════════════════════════════════════════════════
+//  GEMINI HELPERS
+// ═══════════════════════════════════════════════════════════════════
+async function geminiCall(prompt, schema) {
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { responseMimeType: "application/json", responseSchema: schema }
+  };
+  const r = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) {
+    const e = await r.json();
+    throw new Error(e.error?.message || `Gemini error ${r.status}`);
+  }
+  const d = await r.json();
+  const text = d.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+  return JSON.parse(text);
+}
+
+async function parseJD(jdText) {
+  return geminiCall(`
+You are an expert HR analyst. Deeply analyze this job description and extract structured data.
+
+CRITICAL TASKS:
+1. Identify ALL skills, technologies, and competencies mentioned
+2. Detect if this is a HYBRID role (e.g. "Full-Stack", "Design + Product", "Sales + Marketing", "DevOps + Engineering", "Data Science + Engineering")
+3. Map EVERY skill to the correct Bloom's Taxonomy level based on seniority and action verbs used
+4. Calculate overall difficulty: Foundational (junior/0-2yr), Applied (mid/2-4yr), Advanced (senior/4-7yr), Expert (director/7+yr)
+5. Determine dominant Bloom levels for the assessment
+
+Bloom's Taxonomy guide:
+- Remember: Define, List, Recall, Identify — for junior/intern roles
+- Understand: Explain, Describe, Summarize — foundational understanding
+- Apply: Use, Execute, Implement, Solve — hands-on practitioners
+- Analyze: Differentiate, Examine, Break down, Compare — senior problem solvers
+- Evaluate: Judge, Critique, Recommend, Justify — senior decision makers
+- Create: Design, Build, Formulate, Devise — leaders and architects
+
+JD to analyze:
+${jdText}
+`,
+    {
+      type: "object",
+      properties: {
+        roleTitle: { type: "string" },
+        seniority: { type: "string", enum: ["Intern", "Junior", "Mid", "Senior", "Lead", "Director"] },
+        department: { type: "string" },
+        domain: { type: "string" },
+        isHybrid: { type: "boolean" },
+        hybridDepts: { type: "array", items: { type: "string" } },
+        bloomLevels: { type: "array", items: { type: "string" } },
+        difficultyLevel: { type: "string", enum: ["Foundational", "Applied", "Advanced", "Expert"] },
+        keySkills: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              skill: { type: "string" },
+              bloomLevel: { type: "string" },
+              category: { type: "string" }
+            },
+            required: ["skill", "bloomLevel", "category"]
+          }
+        },
+        yearsOfExperience: { type: "string" },
+        coreResponsibilities: { type: "array", items: { type: "string" } },
+        technicalStack: { type: "array", items: { type: "string" } },
+        softSkills: { type: "array", items: { type: "string" } }
+      },
+      required: ["roleTitle","seniority","department","domain","isHybrid","hybridDepts",
+                 "bloomLevels","difficultyLevel","keySkills","yearsOfExperience","coreResponsibilities"]
+    }
+  );
+}
+
+async function generateAssessment(parsedJD) {
+  const hybridNote = parsedJD.isHybrid
+    ? `⚠️ HYBRID ROLE: This spans departments: ${parsedJD.hybridDepts.join(', ')}. Mix questions covering ALL departments. Don't focus on just one area.`
+    : '';
+
+  const bloomGuide = {
+    Foundational: "Focus on Remember + Understand. Questions test knowledge recall and conceptual understanding.",
+    Applied:      "Focus on Understand + Apply. Questions test practical application and execution.",
+    Advanced:     "Focus on Analyze + Evaluate. Questions test critical thinking, trade-offs, and judgment.",
+    Expert:       "Focus on Evaluate + Create. Questions test strategic vision, system design, and leadership."
+  }[parsedJD.difficultyLevel] || "Balance all Bloom levels appropriately.";
+
+  return geminiCall(`
+You are an elite technical assessment designer. Generate exactly 11 rigorous questions for this role.
+
+ROLE: ${parsedJD.roleTitle} (${parsedJD.seniority}) | ${parsedJD.department} | ${parsedJD.domain}
+DIFFICULTY: ${parsedJD.difficultyLevel}
+BLOOM LEVELS TARGETED: ${parsedJD.bloomLevels.join(', ')}
+KEY SKILLS: ${JSON.stringify(parsedJD.keySkills.slice(0, 10))}
+RESPONSIBILITIES: ${parsedJD.coreResponsibilities.slice(0, 5).join('; ')}
+${hybridNote}
+
+BLOOM GUIDE FOR THIS ROLE: ${bloomGuide}
+
+REQUIRED STRUCTURE (exactly 11 questions):
+- Q1-Q5: MCQ — Multiple choice with 4 options. Mark correctAnswer. Each must test a DIFFERENT Bloom level appropriate for the role. Make distractors plausible, not obvious.
+- Q6-Q8: Short Answer — conceptual/explanatory, 2-4 sentence responses expected
+- Q9-Q10: Scenario-based — real-world situational problems, requiring analysis/judgment
+- Q11: Case Study — complex, strategic/creative challenge with multiple dimensions
+
+RULES:
+- Every question must map to a specific Bloom level (Remember/Understand/Apply/Analyze/Evaluate/Create)
+- Questions must be role-specific and domain-relevant — NO generic questions
+- Difficulty must match the role seniority (${parsedJD.seniority})
+- If hybrid role: distribute questions across all mentioned departments
+- Each question must test a different competency
+- MCQ options must be domain-specific and realistic
+- Assign a specific difficulty label: Foundational / Applied / Advanced / Expert
+`,
+    {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id:            { type: "string" },
+          type:          { type: "string", enum: ["mcq","short","scenario","case_study"] },
+          bloomLevel:    { type: "string", enum: ["Remember","Understand","Apply","Analyze","Evaluate","Create"] },
+          difficulty:    { type: "string", enum: ["Foundational","Applied","Advanced","Expert"] },
+          text:          { type: "string" },
+          options:       { type: "array", items: { type: "string" } },
+          correctAnswer: { type: "string" },
+          competency:    { type: "string" },
+          rationale:     { type: "string" }
+        },
+        required: ["id","type","bloomLevel","difficulty","text","competency"]
+      }
+    }
+  );
+}
+
+async function evaluateCandidate(questions, answers, parsedJD) {
+  const qAndA = questions.map(q => ({
+    qNum: q.id, question: q.text, type: q.type,
+    bloomLevel: q.bloomLevel, difficulty: q.difficulty,
+    competency: q.competency,
+    correctAnswer: q.type === 'mcq' ? q.correctAnswer : null,
+    candidateAnswer: answers[q.id] || "(no answer provided)"
+  }));
+
+  return geminiCall(`
+You are an expert, unbiased technical evaluator. Evaluate this candidate's assessment responses.
+
+ROLE: ${parsedJD.roleTitle} (${parsedJD.seniority}) | ${parsedJD.department}
+DIFFICULTY STANDARD: ${parsedJD.difficultyLevel}
+
+Q&A PAIRS:
+${JSON.stringify(qAndA, null, 2)}
+
+EVALUATION CRITERIA:
+1. Accuracy (0-5): Factual correctness, correct MCQ answers
+2. Relevance (0-5): How well responses address the actual question
+3. Reasoning (0-5): Logical coherence, depth of analysis, evidence of thinking
+4. Competency (0-5): Role-specific knowledge and expertise demonstrated
+5. Culture (0-5): Communication quality, structured thinking, ownership mindset
+
+SCORING:
+- totalScore: Weighted average as percentage (0-100). Weight: accuracy×20 + relevance×20 + reasoning×20 + competency×25 + culture×15
+- For MCQs: auto-score based on correctAnswer match
+- For open questions: holistic assessment of depth, specificity, and insight
+
+AI DETECTION: Analyze for formulaic language, lack of personal examples, generic responses, suspiciously perfect structure. Score aiProbability 0.0-1.0.
+
+FAIRNESS: Score fairnessConfidence 0.0-1.0. Consider if any questions were ambiguous or biased.
+
+Be honest and rigorous. Do NOT inflate scores.
+`,
+    {
+      type: "object",
+      properties: {
+        scores: {
+          type: "object",
+          properties: {
+            accuracy:   { type: "number" },
+            relevance:  { type: "number" },
+            reasoning:  { type: "number" },
+            competency: { type: "number" },
+            culture:    { type: "number" }
+          },
+          required: ["accuracy","relevance","reasoning","competency","culture"]
+        },
+        totalScore:         { type: "number" },
+        reasoning:          { type: "string" },
+        strengths:          { type: "array", items: { type: "string" } },
+        weaknesses:         { type: "array", items: { type: "string" } },
+        recommendation:     { type: "string", enum: ["Advance","Review","Reject"] },
+        aiProbability:      { type: "number" },
+        fairnessConfidence: { type: "number" }
+      },
+      required: ["scores","totalScore","reasoning","strengths","weaknesses","recommendation","aiProbability","fairnessConfidence"]
+    }
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════════
+const uid = () => Math.random().toString(36).substring(2, 9);
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function scoreColor(s) {
+  if (s >= 75) return 'emerald';
+  if (s >= 50) return 'amber';
+  return 'red';
+}
+const bloomColors = {
+  Remember: 'slate', Understand: 'blue', Apply: 'violet',
+  Analyze: 'amber', Evaluate: 'orange', Create: 'emerald'
+};
+const diffColors = {
+  Foundational: 'diff-foundational', Applied: 'diff-applied',
+  Advanced: 'diff-advanced', Expert: 'diff-expert'
+};
+const typeColors = { mcq: 'blue', short: 'violet', scenario: 'amber', case_study: 'emerald' };
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = `<div class="alert alert-error"><span class="alert-icon">⚠</span><span>${esc(msg)}</span><button class="alert-close" onclick="this.parentElement.parentElement.classList.add('hidden')">×</button></div>`;
+  el.classList.remove('hidden');
+}
+function hideError(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('hidden');
+}
+function showLoading(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = `<div class="alert alert-info"><div class="spinner"></div><span>${esc(msg)}</span></div>`;
+  el.classList.remove('hidden');
+}
+function hideLoading(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('hidden');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════════════
+const params = new URLSearchParams(window.location.search);
+const testParam = params.get('test');
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  const page = document.getElementById('page-' + name);
+  if (page) page.classList.add('active');
+  const btn = document.querySelector(`[data-page="${name}"]`);
+  if (btn) btn.classList.add('active');
+  if (name === 'dashboard') loadDashboard();
+  if (name === 'analytics') loadAnalytics();
+  if (name === 'logs')      loadLogs();
+  if (name === 'generator') renderGeneratorStep();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  GENERATOR STATE
+// ═══════════════════════════════════════════════════════════════════
+let G = {
+  step: 1,
+  jdText: '',
+  parsedData: null,
+  assessment: null,
+  assessmentId: null,
+  editingIdx: null,
+  shareUrl: ''
+};
+
+function renderGeneratorStep() {
+  renderSteps();
+  hideError('gen-error');
+  hideLoading('gen-loading');
+  const steps = [null, renderStep1, renderStep2, renderStep3, renderStep4];
+  const fn = steps[G.step];
+  if (fn) document.getElementById('gen-step-content').innerHTML = fn();
+  bindGeneratorEvents();
+}
+
+function renderSteps() {
+  const labels = ['Job Description', 'Review Role', 'Questions', 'Publish'];
+  const html = labels.map((label, i) => {
+    const s = i + 1;
+    const state = s < G.step ? 'done' : s === G.step ? 'active' : 'pending';
+    return `
+      ${s > 1 ? `<div class="step-line ${s <= G.step ? 'done' : ''}"></div>` : ''}
+      <div class="step-item">
+        <div class="step-circle ${state}">${state === 'done' ? '✓' : s}</div>
+        <span class="step-label ${state}">${label}</span>
+      </div>`;
+  }).join('');
+  document.getElementById('gen-steps').innerHTML = html;
+}
+
+function renderStep1() {
+  return `
+  <div class="fade-up">
+    <div class="drop-zone card-p" id="drop-zone"
+      ondragover="this.classList.add('dragging');event.preventDefault()"
+      ondragleave="this.classList.remove('dragging')"
+      ondrop="handleFileDrop(event)"
+      onclick="document.getElementById('file-input').click()">
+      <div class="drop-zone-icon">📄</div>
+      <h3>Drop your Job Description here</h3>
+      <p>PDF, DOCX, TXT, PNG, JPG supported</p>
+      <p style="font-size:11px;color:var(--slate-300);margin-top:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Or click to browse</p>
+      <input type="file" id="file-input" class="hidden" accept=".txt,.pdf,.doc,.docx,.png,.jpg,.jpeg" onchange="handleFileChange(event)" />
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-p">
+        <label class="field-label">Or Paste Job Description Text</label>
+        <textarea id="jd-textarea" class="textarea" rows="10"
+          placeholder="Paste the full job description here…&#10;&#10;Include: role title, responsibilities, required skills, experience level, and any technology stack. The more detail, the better the AI can calibrate Bloom's Taxonomy levels and detect hybrid roles."
+          oninput="G.jdText=this.value;updateParseBtn()"
+          >${esc(G.jdText)}</textarea>
+        <div class="flex justify-between items-center mt-3">
+          <span style="font-size:12px;color:var(--slate-300)" id="char-count">${G.jdText.length} characters</span>
+          <button id="parse-btn" class="btn btn-primary" onclick="handleParse()" ${G.jdText.trim() ? '' : 'disabled'}>
+            ✦ Parse JD
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderStep2() {
+  const p = G.parsedData;
+  if (!p) return '';
+  const hybridHtml = p.isHybrid ? `
+    <div class="hybrid-banner mt-4">
+      <span style="font-size:20px">🔀</span>
+      <div>
+        <strong style="color:var(--violet-600)">Hybrid Role Detected</strong>
+        <span style="color:var(--slate-500);margin-left:8px;font-size:13px">Spans: ${p.hybridDepts.map(d => `<span class="badge badge-violet" style="margin-left:4px">${d}</span>`).join('')}</span>
+      </div>
+    </div>` : '';
+
+  return `
+  <div class="card fade-up">
+    <div class="card-p" style="background:var(--slate-50);border-radius:16px 16px 0 0;border-bottom:1px solid var(--slate-100)">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2>${esc(p.roleTitle)}</h2>
+          <div class="flex gap-2 wrap mt-2">
+            <span class="badge badge-emerald">${esc(p.seniority)}</span>
+            <span class="badge badge-blue">${esc(p.department)}</span>
+            <span class="badge badge-slate">${esc(p.domain)}</span>
+            <span class="badge badge-slate">${esc(p.yearsOfExperience)} yrs exp</span>
+            <span class="${diffColors[p.difficultyLevel] || ''} diff-chip">
+              ◉ ${esc(p.difficultyLevel)} Level
+            </span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="section-label">Bloom's Levels</div>
+          <div class="flex gap-2 wrap" style="justify-content:flex-end">
+            ${(p.bloomLevels||[]).map(l => `<span class="badge badge-${bloomColors[l]||'slate'}">${esc(l)}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+      ${hybridHtml}
+    </div>
+    <div class="card-p grid-2">
+      <div>
+        <div class="section-label">Key Skills · Bloom's Taxonomy</div>
+        <div class="flex wrap gap-2">
+          ${(p.keySkills||[]).map(s => `
+            <div class="bloom-tag">
+              <span class="skill-name">${esc(s.skill)}</span>
+              <span class="bloom-level ${bloomColors[s.bloomLevel]||''}">${esc(s.bloomLevel)}${s.category?' · '+esc(s.category):''}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Core Responsibilities</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+          ${(p.coreResponsibilities||[]).slice(0,6).map(r => `
+            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--slate-600)">
+              <span style="color:var(--emerald-500);margin-top:2px;flex-shrink:0">▸</span>${esc(r)}
+            </li>`).join('')}
+        </ul>
+        ${p.technicalStack?.length ? `
+        <div class="section-label mt-4">Tech Stack</div>
+        <div class="flex wrap gap-2">
+          ${p.technicalStack.slice(0,8).map(t => `<span class="badge badge-slate">${esc(t)}</span>`).join('')}
+        </div>` : ''}
+      </div>
+    </div>
+    <div class="card-p flex justify-between items-center" style="border-top:1px solid var(--slate-100);padding-top:16px">
+      <button class="btn btn-ghost" onclick="G.step=1;renderGeneratorStep()">← Back</button>
+      <button class="btn btn-dark" id="generate-btn" onclick="handleGenerate()">
+        ◈ Generate Assessment
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderStep3() {
+  const qs = G.assessment || [];
+  const counts = ['mcq','short','scenario','case_study'].map(t => ({
+    type: t, label: {mcq:'MCQ',short:'Short Answer',scenario:'Scenario',case_study:'Case Study'}[t],
+    count: qs.filter(q => q.type === t).length
+  }));
+
+  return `
+  <div class="fade-up">
+    <div class="card">
+      <div class="card-p flex justify-between items-center" style="border-bottom:1px solid var(--slate-100)">
+        <div>
+          <h2>Generated Assessment</h2>
+          <div style="font-size:12px;color:var(--slate-400);margin-top:3px">${qs.length} questions · Est. 45–60 mins</div>
+        </div>
+        <div class="flex gap-2">
+          ${counts.map(c => c.count > 0 ? `<span class="badge badge-${typeColors[c.type]||'slate'}">${c.count} ${c.label}</span>` : '').join('')}
+        </div>
+      </div>
+      <div style="max-height:520px;overflow-y:auto" id="questions-list">
+        ${qs.map((q, i) => renderQuestionRow(q, i)).join('')}
+      </div>
+    </div>
+    <div class="flex justify-between items-center mt-4">
+      <button class="btn btn-ghost" onclick="G.step=2;renderGeneratorStep()">← Back</button>
+      <button class="btn btn-primary btn-lg" onclick="handlePublish()">
+        ✓ Publish Assessment
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderQuestionRow(q, i) {
+  const isEditing = G.editingIdx === i;
+  return `
+  <div class="q-card" id="qrow-${i}">
+    ${isEditing ? `
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div class="q-num">${i+1}</div>
+        <div style="flex:1">
+          <textarea class="textarea" id="edit-q-${i}" rows="3" style="font-size:14px">${esc(q.text)}</textarea>
+          <div class="flex gap-2 mt-2">
+            <button class="btn btn-primary btn-sm" onclick="saveQuestionEdit(${i})">Save</button>
+            <button class="btn btn-outline btn-sm" onclick="G.editingIdx=null;renderStep3Content()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    ` : `
+      <div style="display:flex;align-items:flex-start;gap:12px" class="group">
+        <div class="q-num">${i+1}</div>
+        <div style="flex:1">
+          <div class="flex items-center gap-2 mb-2 wrap">
+            <span class="badge badge-${typeColors[q.type]||'slate'}">${q.type.replace('_',' ')}</span>
+            <span class="badge badge-${bloomColors[q.bloomLevel]||'slate'}">${esc(q.bloomLevel||'')}</span>
+            <span class="${diffColors[q.difficulty]||''} diff-chip" style="font-size:10px;padding:2px 8px">${esc(q.difficulty||'')}</span>
+            <span style="font-size:11px;color:var(--slate-400);font-weight:600">${esc(q.competency||'')}</span>
+          </div>
+          <p style="font-size:14px;font-weight:600;color:var(--slate-800);line-height:1.5">${esc(q.text)}</p>
+          ${q.options ? `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+              ${q.options.map((opt,j) => `
+                <div style="font-size:12px;padding:7px 10px;border-radius:8px;border:1px solid ${opt===q.correctAnswer?'var(--emerald-200)':'var(--slate-100)'};background:${opt===q.correctAnswer?'var(--emerald-50)':'white'};color:${opt===q.correctAnswer?'var(--emerald-700)':'var(--slate-500)'};">
+                  <strong>${String.fromCharCode(65+j)}.</strong> ${esc(opt)}
+                  ${opt===q.correctAnswer?' <span style="font-size:10px;opacity:0.6">✓</span>':''}
+                </div>`).join('')}
+            </div>` : ''}
+        </div>
+        <button onclick="G.editingIdx=${i};renderStep3Content()" style="font-size:11px;color:var(--slate-300);font-weight:700;padding:4px 8px;border-radius:8px;background:none;border:none;cursor:pointer;flex-shrink:0" onmouseover="this.style.color='var(--emerald-600)';this.style.background='var(--emerald-50)'" onmouseout="this.style.color='var(--slate-300)';this.style.background='none'">Edit</button>
+      </div>
+    `}
+  </div>`;
+}
+
+function renderStep3Content() {
+  document.getElementById('questions-list').innerHTML = (G.assessment || []).map((q,i) => renderQuestionRow(q,i)).join('');
+}
+
+function saveQuestionEdit(i) {
+  const val = document.getElementById(`edit-q-${i}`)?.value?.trim();
+  if (val) G.assessment[i].text = val;
+  G.editingIdx = null;
+  renderStep3Content();
+}
+
+function renderStep4() {
+  return `
+  <div class="card fade-up" style="text-align:center;padding:56px 40px">
+    <div style="width:80px;height:80px;background:var(--emerald-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 24px">✓</div>
+    <h2 style="font-size:26px;margin-bottom:8px">Assessment Published!</h2>
+    <p style="color:var(--slate-400);font-size:14px;max-width:440px;margin:0 auto">
+      Share the link below with candidates. They can complete the timed assessment immediately.
+    </p>
+    <div style="background:var(--slate-50);border:1.5px solid var(--slate-200);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin:28px auto;max-width:600px">
+      <input id="share-url-input" readonly value="${esc(G.shareUrl)}"
+        style="flex:1;background:none;border:none;font-family:'DM Mono',monospace;font-size:13px;color:var(--slate-600);outline:none;min-width:0" />
+      <button onclick="copyShareUrl()" id="copy-btn" class="btn btn-outline btn-sm" style="flex-shrink:0">Copy</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:400px;margin:0 auto">
+      <button onclick="window.open(G.shareUrl,'_blank')" class="btn btn-primary btn-lg full-w" style="justify-content:center">
+        ↗ Preview Candidate View
+      </button>
+      <button onclick="showPage('dashboard')" class="btn btn-dark btn-lg full-w" style="justify-content:center">
+        Go to Dashboard
+      </button>
+    </div>
+  </div>`;
+}
+
+function bindGeneratorEvents() {
+  const ta = document.getElementById('jd-textarea');
+  if (ta) {
+    ta.addEventListener('input', () => {
+      G.jdText = ta.value;
+      const cc = document.getElementById('char-count');
+      if (cc) cc.textContent = `${ta.value.length} characters`;
+      updateParseBtn();
+    });
+  }
+}
+function updateParseBtn() {
+  const btn = document.getElementById('parse-btn');
+  if (btn) btn.disabled = !G.jdText.trim();
+}
+
+// ── File handling ──
+function handleFileDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone')?.classList.remove('dragging');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+function handleFileChange(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+}
+function processFile(file) {
+  const valid = ['text/plain','application/pdf','image/png','image/jpeg',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword'];
+  if (file.type === 'text/plain') {
+    const r = new FileReader();
+    r.onload = ev => {
+      G.jdText = ev.target.result;
+      renderGeneratorStep();
+    };
+    r.readAsText(file);
+  } else {
+    G.jdText = `[Uploaded: ${file.name}]\n\nFile uploaded (${file.type}). In production this would be OCR-processed by Gemini Vision. Please also paste the text content below for best parsing results.`;
+    renderGeneratorStep();
+  }
+}
+
+// ── Parse JD ──
+async function handleParse() {
+  if (!G.jdText.trim()) return;
+  hideError('gen-error');
+  showLoading('gen-loading', 'Analyzing job description — scanning keywords, detecting Bloom\'s Taxonomy levels…');
+  const btn = document.getElementById('parse-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner" style="width:16px;height:16px"></div> Parsing…'; }
+
+  // Animated parse steps
+  document.getElementById('gen-step-content').innerHTML = `
+    <div class="card card-p fade-up" style="max-width:480px;margin:0 auto">
+      <h3 style="margin-bottom:20px;color:var(--slate-700)">Analyzing with Gemini AI…</h3>
+      <div id="parse-steps-list">
+        <div class="parse-step"><span class="spinner" style="width:18px;height:18px"></span><span class="step-text">Scanning job description text…</span></div>
+        <div class="parse-step"><span class="step-status">◯</span><span class="step-text pending">Detecting role, seniority & department…</span></div>
+        <div class="parse-step"><span class="step-status">◯</span><span class="step-text pending">Identifying skills & competencies…</span></div>
+        <div class="parse-step"><span class="step-status">◯</span><span class="step-text pending">Mapping to Bloom's Taxonomy levels…</span></div>
+        <div class="parse-step"><span class="step-status">◯</span><span class="step-text pending">Detecting hybrid role signals…</span></div>
+        <div class="parse-step"><span class="step-status">◯</span><span class="step-text pending">Calculating difficulty level…</span></div>
+      </div>
+    </div>`;
+
+  // Animate steps
+  const steps = document.querySelectorAll('.parse-step');
+  const msgs = [
+    'Scanning job description text…',
+    'Detecting role, seniority & department…',
+    'Identifying skills & competencies…',
+    'Mapping to Bloom\'s Taxonomy levels…',
+    'Detecting hybrid role signals…',
+    'Calculating difficulty level…'
+  ];
+  let stepIdx = 0;
+  const stepInterval = setInterval(() => {
+    if (stepIdx < steps.length) {
+      if (stepIdx > 0) {
+        steps[stepIdx-1].querySelector('.step-status, .spinner').outerHTML = '<span class="step-status">✓</span>';
+        steps[stepIdx-1].querySelector('.step-text').classList.remove('pending');
+        steps[stepIdx-1].querySelector('.step-text').style.color = 'var(--emerald-600)';
+      }
+      if (stepIdx < steps.length) {
+        steps[stepIdx].querySelector('.step-status, .spinner').outerHTML = '<div class="spinner" style="width:18px;height:18px"></div>';
+        steps[stepIdx].querySelector('.step-text').classList.remove('pending');
+      }
+      stepIdx++;
+    }
+  }, 400);
+
+  try {
+    const data = await parseJD(G.jdText);
+    clearInterval(stepInterval);
+    steps.forEach(s => {
+      s.querySelector('.step-status, .spinner, div').outerHTML = '<span class="step-status">✓</span>';
+      s.querySelector('.step-text').style.color = 'var(--emerald-600)';
+    });
+    await new Promise(r => setTimeout(r, 400));
+    G.parsedData = data;
+    G.step = 2;
+    hideLoading('gen-loading');
+    renderGeneratorStep();
+  } catch(e) {
+    clearInterval(stepInterval);
+    hideLoading('gen-loading');
+    showError('gen-error', `Parse failed: ${e.message}`);
+    G.step = 1;
+    renderGeneratorStep();
+  }
+}
+
+// ── Generate assessment ──
+async function handleGenerate() {
+  hideError('gen-error');
+  showLoading('gen-loading', 'Generating tailored assessment questions using Bloom\'s Taxonomy…');
+  const btn = document.getElementById('generate-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner" style="width:16px;height:16px"></div> Generating…'; }
+  try {
+    const qs = await generateAssessment(G.parsedData);
+    G.assessment = qs;
+    G.step = 3;
+    hideLoading('gen-loading');
+    renderGeneratorStep();
+  } catch(e) {
+    hideLoading('gen-loading');
+    showError('gen-error', `Generation failed: ${e.message}`);
+    if (btn) { btn.disabled = false; btn.innerHTML = '◈ Generate Assessment'; }
+  }
+}
+
+// ── Publish ──
+async function handlePublish() {
+  hideError('gen-error');
+  showLoading('gen-loading', 'Saving to database…');
+  try {
+    const jobId = uid(), aId = uid();
+    await fetch('/api/jobs', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ id: jobId, title: G.parsedData.roleTitle, description: G.jdText, parsed_data: G.parsedData })
+    });
+    await fetch('/api/assessments', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ id: aId, job_id: jobId, questions: G.assessment })
+    });
+    G.assessmentId = aId;
+    G.shareUrl = `${window.location.origin}/?test=${aId}`;
+    G.step = 4;
+    hideLoading('gen-loading');
+    renderGeneratorStep();
+  } catch(e) {
+    hideLoading('gen-loading');
+    showError('gen-error', `Publish failed: ${e.message}`);
+  }
+}
+
+function copyShareUrl() {
+  navigator.clipboard.writeText(G.shareUrl);
+  const btn = document.getElementById('copy-btn');
+  if (btn) { btn.textContent = '✓ Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════════════════════════
+async function loadDashboard() {
+  // Load stats
+  try {
+    const s = await fetch('/api/stats').then(r => r.json());
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="stat-card"><div class="stat-icon" style="color:var(--emerald-500)">◈</div>
+        <div class="stat-label">Active Assessments</div><div class="stat-value">${s.active}</div>
+        <div class="stat-sub">Total published</div></div>
+      <div class="stat-card"><div class="stat-icon" style="color:var(--blue-500)">◉</div>
+        <div class="stat-label">Total Candidates</div><div class="stat-value">${s.candidates}</div>
+        <div class="stat-sub">All time</div></div>
+      <div class="stat-card"><div class="stat-icon" style="color:var(--violet-500)">◎</div>
+        <div class="stat-label">Avg. Match Score</div><div class="stat-value">${s.avgScore}%</div>
+        <div class="stat-sub">Evaluated only</div></div>
+      <div class="stat-card"><div class="stat-icon" style="color:var(--amber-500)">▲</div>
+        <div class="stat-label">Advanced Candidates</div><div class="stat-value">${s.advanceCount}</div>
+        <div class="stat-sub">Recommended advance</div></div>`;
+  } catch(e) {}
+  loadLeaderboard();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  LEADERBOARD
+// ═══════════════════════════════════════════════════════════════════
+let allCandidates = [];
+let searchTerm = '';
+
+async function loadLeaderboard() {
+  const container = document.getElementById('leaderboard-container');
+  if (!container) return;
+  container.innerHTML = '<div style="text-align:center;padding:48px;color:var(--slate-300)"><div class="spinner spinner-lg" style="margin:0 auto 12px"></div><div>Loading candidates…</div></div>';
+  try {
+    allCandidates = await fetch('/api/candidates').then(r => r.json());
+    renderLeaderboard();
+  } catch(e) {
+    container.innerHTML = `<div class="alert alert-error"><span class="alert-icon">⚠</span>Failed to load candidates: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderLeaderboard() {
+  const container = document.getElementById('leaderboard-container');
+  if (!container) return;
+
+  const filtered = searchTerm
+    ? allCandidates.filter(c => c.name.toLowerCase().includes(searchTerm) || c.email.toLowerCase().includes(searchTerm))
+    : allCandidates;
+
+  // Group by role
+  const groups = {};
+  filtered.forEach(c => {
+    const role = c.job_title || 'Unknown Role';
+    if (!groups[role]) groups[role] = [];
+    groups[role].push(c);
+  });
+
+  const headerHtml = `
+    <div class="flex justify-between items-center mb-4">
+      <div>
+        <h2>Candidate Leaderboard</h2>
+        <p style="font-size:12px;color:var(--slate-400);margin-top:2px">Ranked by AI evaluation score</p>
+      </div>
+      <div class="flex gap-3 items-center">
+        <div style="position:relative">
+          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--slate-400);font-size:15px">⌕</span>
+          <input type="text" placeholder="Search candidates…" value="${esc(searchTerm)}"
+            oninput="searchTerm=this.value.toLowerCase();renderLeaderboard()"
+            style="padding:9px 14px 9px 36px;border-radius:12px;border:1.5px solid var(--slate-200);font-size:13px;outline:none;width:220px;transition:border-color 0.15s"
+            onfocus="this.style.borderColor='var(--emerald-500)'" onblur="this.style.borderColor='var(--slate-200)'" />
+        </div>
+        <button onclick="loadLeaderboard()" class="btn btn-outline btn-sm">↺ Refresh</button>
+        <button onclick="exportExcel()" class="btn btn-outline btn-sm" id="export-btn">↓ Excel</button>
+      </div>
+    </div>`;
+
+  if (Object.keys(groups).length === 0) {
+    container.innerHTML = headerHtml + `
+      <div class="card" style="text-align:center;padding:64px;color:var(--slate-300)">
+        <div style="font-size:48px;margin-bottom:12px">◉</div>
+        <p style="font-weight:700;font-size:15px">No candidates yet</p>
+        <p style="font-size:13px;margin-top:4px">Candidates will appear here after completing assessments.</p>
+      </div>`;
+    return;
+  }
+
+  let tablesHtml = '';
+  for (const [role, cands] of Object.entries(groups)) {
+    const sorted = [...cands].sort((a,b) => (b.score||0)-(a.score||0));
+    tablesHtml += `
+      <div style="margin-bottom:32px">
+        <div class="flex items-center gap-3 mb-3" style="padding:0 4px">
+          <div style="width:4px;height:24px;background:var(--emerald-500);border-radius:99px"></div>
+          <h3>${esc(role)}</h3>
+          <span class="badge badge-slate">${cands.length} candidate${cands.length>1?'s':''}</span>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Rank</th><th>Candidate</th><th>Score</th>
+                <th>AI Prob.</th><th>Fairness</th><th>Recommendation</th><th></th>
+              </tr></thead>
+              <tbody>
+                ${sorted.map((c,i) => renderCandidateRow(c,i)).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  container.innerHTML = headerHtml + tablesHtml;
+}
+
+function renderCandidateRow(c, i) {
+  const rankColors = ['background:rgba(252,211,77,0.3);color:#92400e','background:var(--slate-200);color:var(--slate-700)','background:rgba(253,186,116,0.4);color:#c2410c'];
+  const rankStyle = rankColors[i] || 'background:var(--slate-100);color:var(--slate-500)';
+  const score = c.score ?? null;
+  const sc = score !== null ? scoreColor(score) : 'slate';
+  const scoreColors = { emerald: '#047857', amber: '#b45309', red: '#b91c1c', slate: 'var(--slate-400)' };
+  const fillColors  = { emerald: 'var(--emerald-500)', amber: 'var(--amber-400)', red: 'var(--red-400)', slate: 'var(--slate-300)' };
+  const rec = c.evaluation?.recommendation || 'Pending';
+  const recBadge = { Advance:'emerald', Review:'amber', Reject:'red', Pending:'slate' };
+  const aiProb = c.ai_probability != null ? (c.ai_probability*100).toFixed(0)+'%' : '—';
+  const fair = c.fairness_score != null ? (c.fairness_score*100).toFixed(0)+'%' : '—';
+
+  return `
+    <tr onclick="openCandidateModal('${esc(c.id)}')" style="cursor:pointer">
+      <td>
+        <div style="width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;${rankStyle}">${i+1}</div>
+      </td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:34px;height:34px;background:var(--emerald-100);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--emerald-700);font-size:14px;flex-shrink:0">${esc(c.name[0])}</div>
+          <div>
+            <div style="font-weight:700;font-size:13.5px">${esc(c.name)}</div>
+            <div style="font-size:12px;color:var(--slate-400)">${esc(c.email)}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        ${score !== null ? `
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="score-bar" style="width:60px;height:5px">
+              <div class="score-fill" style="width:${score}%;background:${fillColors[sc]}"></div>
+            </div>
+            <span style="font-weight:900;color:${scoreColors[sc]};font-size:14px">${score}%</span>
+          </div>` : '<span style="color:var(--slate-300);font-size:13px">Pending</span>'}
+      </td>
+      <td><span style="font-weight:700;font-size:13px;color:${(c.ai_probability||0)>0.5?'var(--red-500)':'var(--slate-400)'}">${aiProb}</span></td>
+      <td><span style="font-weight:700;font-size:13px;color:var(--slate-500)">${fair}</span></td>
+      <td><span class="badge badge-${recBadge[rec]||'slate'}">${rec}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px">
+          <button onclick="event.stopPropagation();deleteCandidate('${esc(c.id)}')"
+            style="width:28px;height:28px;border-radius:8px;border:none;background:none;cursor:pointer;color:var(--slate-300);font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s"
+            onmouseover="this.style.background='var(--red-50)';this.style.color='var(--red-500)'"
+            onmouseout="this.style.background='none';this.style.color='var(--slate-300)'">✕</button>
+          <span style="color:var(--slate-300);font-size:16px">›</span>
+        </div>
+      </td>
+    </tr>`;
+}
+
+async function deleteCandidate(id) {
+  if (!confirm('Remove this candidate from the leaderboard?')) return;
+  await fetch(`/api/candidates/${id}`, { method: 'DELETE' });
+  loadLeaderboard();
+}
+
+async function exportExcel() {
+  const btn = document.getElementById('export-btn');
+  if (btn) { btn.textContent = '⏳ Exporting…'; btn.disabled = true; }
+  window.location.href = '/api/export/excel';
+  setTimeout(() => { if (btn) { btn.textContent = '↓ Excel'; btn.disabled = false; } }, 2500);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CANDIDATE MODAL
+// ═══════════════════════════════════════════════════════════════════
+let currentModalTab = 'evaluation';
+
+async function openCandidateModal(id) {
+  currentModalTab = 'evaluation';
+  document.getElementById('modal-header').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('modal-body').innerHTML = '';
+  document.getElementById('candidate-modal').classList.add('open');
+
+  try {
+    const c = await fetch(`/api/candidates/${id}`).then(r => r.json());
+    renderCandidateModal(c);
+  } catch(e) {
+    document.getElementById('modal-header').innerHTML = `<span style="color:var(--red-500)">Failed to load</span>`;
+  }
+}
+
+function renderCandidateModal(c) {
+  const rec = c.evaluation?.recommendation || 'Pending';
+  const recBadge = { Advance:'emerald', Review:'amber', Reject:'red', Pending:'slate' };
+  const score = c.score ?? null;
+  const sc = scoreColor(score || 0);
+  const fillColors = { emerald:'var(--emerald-500)', amber:'var(--amber-400)', red:'var(--red-400)', slate:'var(--slate-200)' };
+  const scoreTextColors = { emerald:'var(--emerald-700)', amber:'var(--amber-700)', red:'var(--red-600)', slate:'var(--slate-400)' };
+
+  document.getElementById('modal-header').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:52px;height:52px;background:var(--emerald-100);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--emerald-700);font-size:22px;flex-shrink:0">${esc(c.name[0])}</div>
+      <div>
+        <h2 style="font-size:19px;margin:0">${esc(c.name)}</h2>
+        <p style="font-size:13px;color:var(--slate-400);margin:2px 0 0">${esc(c.job_title||'')} · ${esc(c.email)}</p>
+      </div>
+      <span class="badge badge-${recBadge[rec]||'slate'}" style="margin-left:8px">${rec}</span>
+    </div>
+    <button class="modal-close" onclick="closeModal()">×</button>`;
+
+  const questions = c.questions || [];
+  const answers   = c.answers   || {};
+  const ev        = c.evaluation || {};
+  const scores    = ev.scores   || {};
+
+  // Responses tab HTML
+  const responsesHtml = questions.length === 0
+    ? '<p style="color:var(--slate-300);font-size:13px">No questions available.</p>'
+    : questions.map((q,i) => `
+        <div class="card" style="margin-bottom:14px;overflow:hidden">
+          <div style="padding:14px 18px;display:flex;align-items:flex-start;gap:12px">
+            <div class="q-num" style="flex-shrink:0;margin-top:2px">${i+1}</div>
+            <div style="flex:1">
+              <div class="flex items-center gap-2 mb-2 wrap">
+                <span class="badge badge-${typeColors[q.type]||'slate'}">${q.type.replace('_',' ')}</span>
+                ${q.bloomLevel?`<span class="badge badge-${bloomColors[q.bloomLevel]||'slate'}">${esc(q.bloomLevel)}</span>`:''}
+                <span style="font-size:11px;color:var(--slate-400);font-weight:600">${esc(q.competency||'')}</span>
+              </div>
+              <p style="font-size:13.5px;font-weight:600;color:var(--slate-800);margin-bottom:10px;line-height:1.5">${esc(q.text)}</p>
+              ${q.type==='mcq' && q.options ? `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px">
+                  ${q.options.map((opt,j) => {
+                    const isCorrect = opt === q.correctAnswer;
+                    const isSelected = answers[q.id] === opt;
+                    let bg='white',border='var(--slate-100)',color='var(--slate-500)';
+                    if (isSelected && isCorrect) { bg='var(--emerald-50)';border='var(--emerald-300)';color='var(--emerald-700)'; }
+                    else if (isSelected) { bg='var(--red-50)';border='#fecaca';color='var(--red-600)'; }
+                    else if (isCorrect) { bg='var(--emerald-50)';border='var(--emerald-200)';color='var(--emerald-600)'; }
+                    return `<div style="font-size:12px;padding:7px 10px;border-radius:8px;border:1px solid ${border};background:${bg};color:${color};font-weight:${isSelected||isCorrect?700:400}">
+                      <strong>${String.fromCharCode(65+j)}.</strong> ${esc(opt)}
+                      ${isCorrect?' ✓':''}${isSelected&&!isCorrect?' ✗':''}
+                    </div>`;
+                  }).join('')}
+                </div>` : ''}
+              <div style="background:var(--slate-50);border:1px solid var(--slate-100);border-radius:10px;padding:12px 14px">
+                <div style="font-size:10px;font-weight:800;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Candidate's Answer</div>
+                <p style="font-size:13.5px;color:${answers[q.id]?'var(--slate-700)':'var(--slate-300)'};white-space:pre-wrap;line-height:1.6">
+                  ${answers[q.id] ? esc(answers[q.id]) : 'No answer provided'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>`).join('');
+
+  document.getElementById('modal-body').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 260px;gap:24px">
+      <!-- Left -->
+      <div>
+        <div class="tabs" id="modal-tabs">
+          <button class="tab-btn ${currentModalTab==='evaluation'?'active':''}" onclick="switchModalTab('evaluation')">Evaluation</button>
+          <button class="tab-btn ${currentModalTab==='responses'?'active':''}" onclick="switchModalTab('responses')">Responses (${questions.length})</button>
+        </div>
+        <div id="modal-tab-content">
+          ${currentModalTab === 'evaluation' ? renderEvaluationTab(ev) : `<div class="fade-up">${responsesHtml}</div>`}
+        </div>
+      </div>
+      <!-- Right sidebar -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <!-- Score hero -->
+        <div class="score-hero">
+          <div class="label">Overall Score</div>
+          <div style="display:flex;align-items:baseline;gap:4px;margin:6px 0">
+            <span class="number">${score !== null ? score : '—'}</span>
+            <span class="pct">%</span>
+          </div>
+          <div class="score-bar" style="height:6px;background:rgba(255,255,255,0.2)">
+            <div class="score-fill" style="width:${score||0}%;background:rgba(255,255,255,0.7)"></div>
+          </div>
+        </div>
+
+        <!-- Score breakdown -->
+        ${Object.keys(scores).length > 0 ? `
+        <div class="card card-p">
+          <div class="section-label">Score Breakdown</div>
+          ${Object.entries(scores).map(([k,v]) => `
+            <div style="margin-bottom:12px">
+              <div class="flex justify-between" style="margin-bottom:5px">
+                <span style="font-size:12px;font-weight:600;color:var(--slate-500);text-transform:capitalize">${k}</span>
+                <span style="font-size:12px;font-weight:900;color:var(--slate-800)">${v}/5</span>
+              </div>
+              <div class="score-bar" style="height:5px">
+                <div class="score-fill" style="width:${(v/5)*100}%;background:var(--emerald-500)"></div>
+              </div>
+            </div>`).join('')}
+        </div>` : ''}
+
+        <!-- Integrity & Fairness -->
+        <div class="card card-p">
+          <div class="section-label">Integrity & Fairness</div>
+          <div class="flex justify-between items-center" style="margin-bottom:10px">
+            <span style="font-size:12px;font-weight:600;color:var(--slate-500)">AI Usage Prob.</span>
+            <span style="font-size:14px;font-weight:900;color:${(c.ai_probability||0)>0.5?'var(--red-500)':'var(--emerald-600)'}">${c.ai_probability!=null?(c.ai_probability*100).toFixed(0)+'%':'—'}</span>
+          </div>
+          <div class="score-bar" style="height:5px;margin-bottom:14px">
+            <div class="score-fill" style="width:${(c.ai_probability||0)*100}%;background:${(c.ai_probability||0)>0.5?'var(--red-400)':'var(--emerald-400)'}"></div>
+          </div>
+          <div class="flex justify-between items-center" style="margin-bottom:8px">
+            <span style="font-size:12px;font-weight:600;color:var(--slate-500)">Fairness Confidence</span>
+            <span style="font-size:14px;font-weight:900;color:var(--slate-700)">${c.fairness_score!=null?(c.fairness_score*100).toFixed(0)+'%':'—'}</span>
+          </div>
+          <div class="score-bar" style="height:5px">
+            <div class="score-fill" style="width:${(c.fairness_score||0)*100}%;background:var(--blue-400)"></div>
+          </div>
+          ${(c.ai_probability||0)>0.5 ? `
+          <div style="margin-top:12px;padding:10px;background:var(--red-50);border:1px solid #fecaca;border-radius:10px;font-size:11px;color:var(--red-600);font-weight:700">
+            ⚠ High AI usage detected. Manual review recommended.
+          </div>` : ''}
+        </div>
+
+        <!-- Meta -->
+        <div class="card card-p">
+          <div class="section-label">Details</div>
+          <div style="font-size:12px;color:var(--slate-500);line-height:2">
+            <div><strong>Status:</strong> <span class="badge badge-${c.status==='completed'?'emerald':'slate'}" style="font-size:10px">${esc(c.status)}</span></div>
+            <div><strong>Submitted:</strong> ${new Date(c.created_at).toLocaleDateString()}</div>
+            <div><strong>Questions:</strong> ${questions.length}</div>
+            <div><strong>Answered:</strong> ${Object.keys(answers).filter(k => answers[k]).length}/${questions.length}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden data for tab switching -->
+    <script id="modal-data" type="application/json">${JSON.stringify({ev, responsesHtml, questions: questions.length})}<\/script>`;
+}
+
+function renderEvaluationTab(ev) {
+  return `
+    <div class="fade-up">
+      <div style="background:var(--slate-50);border:1px solid var(--slate-100);border-radius:14px;padding:18px 20px;margin-bottom:20px">
+        <div class="section-label">AI Reasoning</div>
+        <p style="font-size:13.5px;color:var(--slate-700);line-height:1.7">${esc(ev.reasoning || 'Evaluation pending.')}</p>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div class="section-label" style="color:var(--emerald-600)">✓ Strengths</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
+            ${(ev.strengths||[]).map(s => `<li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--slate-600)"><span style="color:var(--emerald-500);flex-shrink:0;margin-top:2px">▸</span>${esc(s)}</li>`).join('')}
+          </ul>
+        </div>
+        <div>
+          <div class="section-label" style="color:var(--red-500)">⚡ Improvements</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
+            ${(ev.weaknesses||[]).map(w => `<li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--slate-600)"><span style="color:var(--red-400);flex-shrink:0;margin-top:2px">▸</span>${esc(w)}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+    </div>`;
+}
+
+function switchModalTab(tab) {
+  currentModalTab = tab;
+  document.querySelectorAll('#modal-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`#modal-tabs .tab-btn[onclick="switchModalTab('${tab}')"]`)?.classList.add('active');
+  const content = document.getElementById('modal-tab-content');
+  const dataEl = document.getElementById('modal-data');
+  if (!dataEl || !content) return;
+  const data = JSON.parse(dataEl.textContent);
+  if (tab === 'evaluation') {
+    content.innerHTML = renderEvaluationTab(data.ev);
+  } else {
+    content.innerHTML = `<div class="fade-up">${data.responsesHtml}</div>`;
+  }
+}
+
+function closeModal() {
+  document.getElementById('candidate-modal').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ═══════════════════════════════════════════════════════════════════
+//  ANALYTICS
+// ═══════════════════════════════════════════════════════════════════
+async function loadAnalytics() {
+  const container = document.getElementById('analytics-content');
+  container.innerHTML = '<div style="text-align:center;padding:48px"><div class="spinner spinner-lg" style="margin:0 auto"></div></div>';
+  try {
+    const [candidates, stats] = await Promise.all([
+      fetch('/api/candidates').then(r => r.json()),
+      fetch('/api/stats').then(r => r.json())
+    ]);
+    const completed = candidates.filter(c => c.status==='completed' && c.score!=null);
+    const buckets = [
+      {label:'90-100%',min:90,max:100,color:'var(--emerald-500)'},
+      {label:'75-89%', min:75,max:89, color:'var(--emerald-400)'},
+      {label:'60-74%', min:60,max:74, color:'var(--amber-400)'},
+      {label:'40-59%', min:40,max:59, color:'var(--orange-500)'},
+      {label:'0-39%',  min:0, max:39, color:'var(--red-400)'},
+    ].map(b => ({...b, count: completed.filter(c => c.score>=b.min && c.score<=b.max).length}));
+    const maxCount = Math.max(...buckets.map(b => b.count), 1);
+    const recs = {Advance:0,Review:0,Reject:0};
+    completed.forEach(c => { if(c.evaluation?.recommendation) recs[c.evaluation.recommendation]++; });
+    const totalRecs = Object.values(recs).reduce((a,b)=>a+b,0);
+    const avgAI = completed.length ? Math.round(completed.reduce((s,c)=>s+(c.ai_probability||0),0)/completed.length*100) : 0;
+    const avgFair = completed.length ? Math.round(completed.reduce((s,c)=>s+(c.fairness_score||0),0)/completed.length*100) : 0;
+
+    container.innerHTML = `
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:20px">
+        <!-- Score Distribution -->
+        <div class="card card-p">
+          <h2 style="margin-bottom:4px">Score Distribution</h2>
+          <p style="font-size:12px;color:var(--slate-400);margin-bottom:24px">${completed.length} evaluated candidates</p>
+          ${completed.length === 0 ? '<div style="height:120px;display:flex;align-items:center;justify-content:center;color:var(--slate-300);font-size:13px">No data yet</div>' : `
+          <div class="bar-chart">
+            ${buckets.map(b => `
+              <div class="bar-col">
+                <div class="bar-count">${b.count}</div>
+                <div style="flex:1;width:100%;display:flex;align-items:flex-end">
+                  <div class="bar-fill" style="background:${b.color};height:${Math.max((b.count/maxCount)*100,b.count>0?6:0)}px;width:100%"></div>
+                </div>
+                <div class="bar-label">${b.label}</div>
+              </div>`).join('')}
+          </div>`}
+        </div>
+        <!-- Recommendations -->
+        <div class="card card-p">
+          <h2 style="margin-bottom:16px">Recommendations</h2>
+          ${Object.entries(recs).map(([rec,count]) => {
+            const recColors = {Advance:'emerald',Review:'amber',Reject:'red'};
+            const fillMap = {Advance:'var(--emerald-500)',Review:'var(--amber-400)',Reject:'var(--red-400)'};
+            return `
+            <div style="margin-bottom:14px">
+              <div class="flex justify-between" style="margin-bottom:5px">
+                <span class="badge badge-${recColors[rec]||'slate'}">${rec}</span>
+                <span style="font-size:13px;font-weight:900;color:var(--slate-700)">${count}</span>
+              </div>
+              <div class="score-bar" style="height:6px">
+                <div class="score-fill" style="width:${totalRecs>0?(count/totalRecs*100):0}%;background:${fillMap[rec]||'var(--slate-300)'}"></div>
+              </div>
+            </div>`;
+          }).join('')}
+          <div class="divider"></div>
+          <div style="font-size:12px;color:var(--slate-500);display:flex;flex-direction:column;gap:8px">
+            <div class="flex justify-between"><span>Avg AI Probability</span><strong>${avgAI}%</strong></div>
+            <div class="flex justify-between"><span>Avg Fairness Score</span><strong>${avgFair}%</strong></div>
+            <div class="flex justify-between"><span>Completion Rate</span><strong>${candidates.length>0?Math.round(completed.length/candidates.length*100):0}%</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloom's Coverage -->
+      <div class="card card-p" style="margin-bottom:20px">
+        <h2 style="margin-bottom:16px">Assessment Quality Overview</h2>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px">
+          ${['Remember','Understand','Apply','Analyze','Evaluate','Create'].map((level,i) => {
+            const pct = [15,20,20,20,15,10][i];
+            return `<div style="text-align:center;padding:14px;background:var(--slate-50);border-radius:12px;border:1px solid var(--slate-100)">
+              <div style="font-size:20px;margin-bottom:6px">${['🧠','📖','🛠','🔍','⚖','✨'][i]}</div>
+              <div class="badge badge-${bloomColors[level]||'slate'}" style="font-size:10px;margin-bottom:8px">${level}</div>
+              <div style="font-size:22px;font-weight:900;color:var(--slate-800)">${pct}%</div>
+              <div style="font-size:10px;color:var(--slate-400);margin-top:2px">coverage</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  } catch(e) {
+    container.innerHTML = `<div class="alert alert-error"><span class="alert-icon">⚠</span>Failed to load analytics.</div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  LOGS
+// ═══════════════════════════════════════════════════════════════════
+async function loadLogs() {
+  const tbody = document.getElementById('logs-tbody');
+  try {
+    const logs = await fetch('/api/logs').then(r => r.json());
+    if (!logs.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:48px;color:var(--slate-300)">No logs yet.</td></tr>';
+      return;
+    }
+    const evColors = { TEST_SUBMITTED:'emerald', CANDIDATE_REGISTERED:'blue', ASSESSMENT_PUBLISHED:'violet', JOB_CREATED:'slate' };
+    tbody.innerHTML = logs.map(l => `
+      <tr>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--slate-400)">${new Date(l.timestamp).toLocaleString()}</td>
+        <td><span class="badge badge-${evColors[l.event_type]||'slate'}" style="font-size:10px">${l.event_type.replace(/_/g,' ')}</span></td>
+        <td style="font-size:13px;font-weight:600">${esc(l.user_email||'—')}</td>
+        <td style="font-size:13px;color:var(--slate-500)">${esc(l.details||'—')}</td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:var(--red-500);text-align:center;padding:24px">Failed to load logs.</td></tr>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CANDIDATE TEST VIEW
+// ═══════════════════════════════════════════════════════════════════
+let TEST = {
+  assessment: null, job: null, parsedJD: null,
+  candidateInfo: { name: '', email: '' },
+  phase: 'loading', // loading | notfound | register | test | submitting | done | error
+  currentIdx: 0, answers: {}, timeLeft: 3600,
+  timerInterval: null, errorMsg: '', candidateId: null
+};
+
+async function initTestView(assessmentId) {
+  // Hide sidebar for test view
+  document.getElementById('sidebar').style.display = 'none';
+  document.getElementById('main').style.marginLeft = '0';
+
+  const page = document.getElementById('page-test');
+  page.classList.add('active');
+  document.getElementById('page-generator').classList.remove('active');
+  page.innerHTML = renderTestPhase('loading', assessmentId);
+
+  try {
+    const assessment = await fetch(`/api/assessments/${assessmentId}`).then(r => r.json());
+    if (assessment.error) { TEST.phase = 'notfound'; renderTest(page, assessmentId); return; }
+    TEST.assessment = assessment;
+    // Get job and parsedJD
+    const jobs = await fetch('/api/jobs').then(r => r.json());
+    TEST.job = jobs.find(j => j.id === assessment.job_id);
+    TEST.parsedJD = TEST.job?.parsed_data || { roleTitle: 'Assessment', department: 'General', seniority: 'Mid' };
+    TEST.phase = 'register';
+    renderTest(page, assessmentId);
+  } catch(e) {
+    TEST.phase = 'notfound';
+    renderTest(page, assessmentId);
+  }
+}
+
+function renderTest(page, assessmentId) {
+  page.innerHTML = renderTestPhase(TEST.phase, assessmentId);
+  bindTestEvents(assessmentId);
+}
+
+function renderTestPhase(phase, assessmentId) {
+  if (phase === 'loading') return `
+    <div style="flex:1;display:flex;align-items:center;justify-content:center">
+      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
+        <div class="spinner spinner-lg"></div>
+        <p style="color:var(--slate-400);font-size:14px">Loading assessment…</p>
+      </div>
+    </div>`;
+
+  if (phase === 'notfound') return `
+    <div style="flex:1;display:flex;align-items:center;justify-content:center">
+      <div style="text-align:center;max-width:400px;padding:40px">
+        <div style="font-size:64px;margin-bottom:20px">⚠</div>
+        <h2 style="margin-bottom:8px">Assessment Not Found</h2>
+        <p style="color:var(--slate-400);font-size:14px;margin-bottom:24px">This assessment link may be invalid or expired.</p>
+        <a href="/" class="btn btn-dark">← Return Home</a>
+      </div>
+    </div>`;
+
+  if (phase === 'register') {
+    const job = TEST.job;
+    const q = TEST.assessment?.questions || [];
+    return `
+      <div style="min-height:100vh;background:linear-gradient(135deg,var(--slate-50) 0%,rgba(209,250,229,0.2) 100%);display:flex;align-items:center;justify-content:center;padding:32px">
+        <div class="card fade-up" style="max-width:480px;width:100%;padding:48px 40px">
+          <div style="text-align:center;margin-bottom:32px">
+            <div style="width:56px;height:56px;background:var(--slate-900);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:white;margin:0 auto 16px">M</div>
+            <h2 style="font-size:22px;margin-bottom:6px">${esc(job?.title || 'Mosaic Talent Assessment')}</h2>
+            <p style="color:var(--slate-400);font-size:13px">${q.length} questions · 60 minutes · Skills-First</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px">
+            <div>
+              <label class="field-label">Full Name</label>
+              <input id="test-name" class="input" type="text" placeholder="Your full name"
+                value="${esc(TEST.candidateInfo.name)}" oninput="TEST.candidateInfo.name=this.value;updateStartBtn()" />
+            </div>
+            <div>
+              <label class="field-label">Email Address</label>
+              <input id="test-email" class="input" type="email" placeholder="you@company.com"
+                value="${esc(TEST.candidateInfo.email)}" oninput="TEST.candidateInfo.email=this.value;updateStartBtn()" />
+            </div>
+          </div>
+          <div class="alert alert-warning" style="margin-bottom:24px">
+            <span class="alert-icon">⏱</span>
+            <span><strong>Timed test (60 mins)</strong> — Once started, the timer cannot be paused. Ensure a stable connection.</span>
+          </div>
+          <button id="start-btn" class="btn btn-primary btn-lg full-w" style="justify-content:center"
+            onclick="startTest('${assessmentId}')"
+            ${TEST.candidateInfo.name.trim() && TEST.candidateInfo.email.trim() ? '' : 'disabled'}>
+            Start Assessment →
+          </button>
+        </div>
+      </div>`;
+  }
+
+  if (phase === 'test') {
+    const qs = TEST.assessment.questions;
+    const q = qs[TEST.currentIdx];
+    const totalQs = qs.length;
+    const progress = ((TEST.currentIdx + 1) / totalQs) * 100;
+    const answeredCount = Object.keys(TEST.answers).filter(k => TEST.answers[k]).length;
+    const mins = Math.floor(TEST.timeLeft / 60);
+    const secs = (TEST.timeLeft % 60).toString().padStart(2, '0');
+    const timerDanger = TEST.timeLeft < 300;
+
+    return `
+      <style>
+        #test-main { flex:1; max-width:780px; margin:0 auto; width:100%; padding:40px 24px; }
+      </style>
+      <div style="min-height:100vh;display:flex;flex-direction:column">
+        <!-- Header -->
+        <div class="test-header">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:32px;height:32px;background:var(--slate-900);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:14px">M</div>
+            <div>
+              <span style="font-weight:800;font-size:14px;color:var(--slate-800)">${esc(TEST.job?.title || 'Assessment')}</span>
+              <span style="color:var(--slate-300);margin:0 8px">·</span>
+              <span style="font-size:12px;color:var(--slate-400)">${answeredCount}/${totalQs} answered</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:20px">
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+              <div style="width:160px;height:5px;background:var(--slate-100);border-radius:99px;overflow:hidden">
+                <div style="height:100%;width:${progress}%;background:var(--emerald-500);border-radius:99px;transition:width 0.3s"></div>
+              </div>
+              <span style="font-size:10px;color:var(--slate-400);font-weight:700">${Math.round(progress)}% complete</span>
+            </div>
+            <div class="timer-badge ${timerDanger ? 'danger' : ''}">${mins}:${secs}</div>
+          </div>
+        </div>
+
+        <div id="test-main">
+          <!-- Question card -->
+          <div class="card fade-up" style="padding:40px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px">
+              <span class="badge badge-${typeColors[q.type]||'slate'}">
+                Q${TEST.currentIdx+1} of ${totalQs}
+              </span>
+              <div style="display:flex;gap:8px;align-items:center">
+                ${q.bloomLevel?`<span class="badge badge-${bloomColors[q.bloomLevel]||'slate'}">${esc(q.bloomLevel)}</span>`:''}
+                <span style="font-size:11px;color:var(--slate-400);font-weight:600">${esc(q.competency||'')}</span>
+              </div>
+            </div>
+            <h2 style="font-size:20px;font-weight:800;color:var(--slate-900);line-height:1.45;margin-bottom:28px">${esc(q.text)}</h2>
+            ${q.type === 'mcq' ? `
+              <div style="display:flex;flex-direction:column;gap:10px" id="mcq-options">
+                ${(q.options||[]).map((opt,i) => `
+                  <button class="mcq-option ${TEST.answers[q.id]===opt?'selected':''}"
+                    onclick="selectMCQ('${esc(q.id)}','${esc(opt).replace(/'/g,"\\'")}',this)">
+                    <div class="opt-badge">${String.fromCharCode(65+i)}</div>
+                    ${esc(opt)}
+                  </button>`).join('')}
+              </div>` : `
+              <textarea class="textarea" id="open-answer" rows="${q.type==='case_study'?8:5}"
+                placeholder="${q.type==='case_study'?'Provide a detailed strategic response…':q.type==='scenario'?'Describe how you would handle this situation…':'Type your response here…'}"
+                oninput="TEST.answers['${esc(q.id)}']=this.value"
+                style="font-size:14px;line-height:1.6">${esc(TEST.answers[q.id]||'')}</textarea>`}
+          </div>
+
+          <!-- Navigation -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:24px">
+            <button class="btn btn-ghost" onclick="testNav(-1)" ${TEST.currentIdx===0?'disabled':''}>← Previous</button>
+            <div class="progress-dots" id="progress-dots">
+              ${qs.map((_,i) => {
+                let cls = i === TEST.currentIdx ? 'current' : (TEST.answers[qs[i].id] ? 'answered' : 'empty');
+                return `<div class="dot ${cls}" onclick="jumpToQ(${i})" title="Question ${i+1}"></div>`;
+              }).join('')}
+            </div>
+            ${TEST.currentIdx === totalQs-1 ? `
+              <button class="btn btn-primary" id="submit-btn" onclick="submitTest('${assessmentId}')">
+                Finish & Submit ✓
+              </button>` : `
+              <button class="btn btn-dark" onclick="testNav(1)">Next →</button>`}
+          </div>
+
+          <div id="test-error" class="hidden mt-4"></div>
+        </div>
+      </div>`;
+  }
+
+  if (phase === 'submitting') return `
+    <div style="flex:1;display:flex;align-items:center;justify-content:center">
+      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;max-width:400px;padding:40px">
+        <div class="spinner spinner-lg"></div>
+        <div>
+          <h2 style="font-size:20px">Processing Submission</h2>
+          <p style="color:var(--slate-400);font-size:14px;margin-top:8px" id="submit-msg">${esc(TEST.errorMsg || 'Evaluating your responses with AI…')}</p>
+        </div>
+        <div style="width:100%;background:var(--slate-100);height:4px;border-radius:99px;overflow:hidden">
+          <div style="height:100%;background:var(--emerald-500);border-radius:99px;animation:progress-bar 8s ease forwards"></div>
+        </div>
+        <style>@keyframes progress-bar { from{width:0} to{width:90%} }</style>
+      </div>
+    </div>`;
+
+  if (phase === 'done') return `
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--slate-50),rgba(209,250,229,0.15))">
+      <div class="card fade-up" style="max-width:460px;width:100%;padding:56px 48px;text-align:center">
+        <div style="width:80px;height:80px;background:var(--emerald-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 24px">✓</div>
+        <h2 style="font-size:26px;margin-bottom:8px">Submission Received!</h2>
+        <p style="color:var(--slate-400);font-size:14px;line-height:1.6;max-width:340px;margin:0 auto 28px">
+          Thank you for completing the assessment. Our team will review your responses and be in touch soon.
+        </p>
+        <div style="background:var(--slate-50);border:1px solid var(--slate-100);border-radius:14px;padding:18px 20px;text-align:left;margin-bottom:28px">
+          <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--slate-100);font-size:13px">
+            <span style="color:var(--slate-400);font-weight:600">Candidate</span>
+            <span style="font-weight:700">${esc(TEST.candidateInfo.name)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--slate-100);font-size:13px">
+            <span style="color:var(--slate-400);font-weight:600">Assessment</span>
+            <span style="font-weight:700">${esc(TEST.job?.title || 'Assessment')}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:13px">
+            <span style="color:var(--slate-400);font-weight:600">Submitted</span>
+            <span style="font-weight:700">${new Date().toLocaleString()}</span>
+          </div>
+        </div>
+        <a href="/" class="btn btn-dark btn-lg full-w" style="justify-content:center;display:flex">Return Home</a>
+      </div>
+    </div>`;
+
+  if (phase === 'error') return `
+    <div style="flex:1;display:flex;align-items:center;justify-content:center">
+      <div class="card" style="max-width:420px;width:100%;padding:48px;text-align:center">
+        <div style="font-size:48px;margin-bottom:16px">⚠</div>
+        <h2 style="margin-bottom:8px">Submission Error</h2>
+        <p style="color:var(--red-500);font-size:13px;margin-bottom:24px">${esc(TEST.errorMsg)}</p>
+        <div style="display:flex;gap:12px;justify-content:center">
+          <button onclick="TEST.phase='test';renderTest(document.getElementById('page-test'),'${assessmentId}')" class="btn btn-outline">← Try Again</button>
+          <a href="/" class="btn btn-dark">Return Home</a>
+        </div>
+      </div>
+    </div>`;
+
+  return '';
+}
+
+function bindTestEvents(assessmentId) {
+  if (TEST.phase === 'test' && TEST.timerInterval === null) {
+    TEST.timerInterval = setInterval(() => {
+      TEST.timeLeft--;
+      if (TEST.timeLeft <= 0) {
+        clearInterval(TEST.timerInterval);
+        submitTest(assessmentId);
+        return;
+      }
+      // Update timer display
+      const tb = document.querySelector('.timer-badge');
+      if (tb) {
+        const m = Math.floor(TEST.timeLeft/60);
+        const s = (TEST.timeLeft%60).toString().padStart(2,'0');
+        tb.textContent = `${m}:${s}`;
+        if (TEST.timeLeft < 300) tb.classList.add('danger');
+      }
+    }, 1000);
+  }
+}
+
+function updateStartBtn() {
+  const btn = document.getElementById('start-btn');
+  if (btn) btn.disabled = !TEST.candidateInfo.name.trim() || !TEST.candidateInfo.email.trim();
+}
+
+function startTest(assessmentId) {
+  TEST.phase = 'test';
+  TEST.timeLeft = 3600;
+  TEST.timerInterval = null;
+  renderTest(document.getElementById('page-test'), assessmentId);
+}
+
+function selectMCQ(qId, opt, el) {
+  TEST.answers[qId] = opt;
+  document.querySelectorAll('.mcq-option').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  // Update dots
+  updateProgressDots();
+}
+
+function updateProgressDots() {
+  const qs = TEST.assessment?.questions || [];
+  const dots = document.querySelectorAll('.progress-dots .dot');
+  dots.forEach((dot, i) => {
+    dot.className = 'dot ' + (i === TEST.currentIdx ? 'current' : (TEST.answers[qs[i]?.id] ? 'answered' : 'empty'));
+  });
+}
+
+function testNav(dir) {
+  const qs = TEST.assessment?.questions || [];
+  // Save open answer if any
+  const openAns = document.getElementById('open-answer');
+  if (openAns) TEST.answers[qs[TEST.currentIdx]?.id] = openAns.value;
+  TEST.currentIdx = Math.max(0, Math.min(qs.length - 1, TEST.currentIdx + dir));
+  const page = document.getElementById('page-test');
+  page.innerHTML = renderTestPhase('test', '');
+  bindTestEvents('');
+}
+
+function jumpToQ(i) {
+  const qs = TEST.assessment?.questions || [];
+  const openAns = document.getElementById('open-answer');
+  if (openAns) TEST.answers[qs[TEST.currentIdx]?.id] = openAns.value;
+  TEST.currentIdx = i;
+  const page = document.getElementById('page-test');
+  page.innerHTML = renderTestPhase('test', '');
+  bindTestEvents('');
+}
+
+async function submitTest(assessmentId) {
+  // Save last open answer
+  const qs = TEST.assessment?.questions || [];
+  const openAns = document.getElementById('open-answer');
+  if (openAns) TEST.answers[qs[TEST.currentIdx]?.id] = openAns.value;
+
+  if (TEST.timerInterval) { clearInterval(TEST.timerInterval); TEST.timerInterval = null; }
+  TEST.phase = 'submitting';
+  TEST.errorMsg = 'Registering your details…';
+  const page = document.getElementById('page-test');
+  renderTest(page, assessmentId);
+
+  try {
+    // 1. Register candidate
+    const regRes = await fetch('/api/candidates', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ id: uid(), ...TEST.candidateInfo, assessment_id: assessmentId })
+    });
+    const { id: candidateId } = await regRes.json();
+    TEST.candidateId = candidateId;
+
+    const msgEl = document.getElementById('submit-msg');
+    if (msgEl) msgEl.textContent = 'Evaluating your responses with Gemini AI… This may take 15–30 seconds.';
+
+    // 2. Evaluate with Gemini
+    const evalResult = await evaluateCandidate(
+      TEST.assessment.questions, TEST.answers, TEST.parsedJD
+    );
+
+    if (msgEl) msgEl.textContent = 'Saving results…';
+
+    // 3. Save result
+    await fetch(`/api/candidates/${candidateId}`, {
+      method: 'PUT', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        status: 'completed', score: evalResult.totalScore,
+        evaluation: evalResult, answers: TEST.answers,
+        ai_probability: evalResult.aiProbability,
+        fairness_score: evalResult.fairnessConfidence,
+        email: TEST.candidateInfo.email,
+        assessment_id: assessmentId
+      })
+    });
+
+    TEST.phase = 'done';
+    renderTest(page, assessmentId);
+  } catch(e) {
+    TEST.errorMsg = e.message || 'Submission failed. Please try again.';
+    TEST.phase = 'error';
+    renderTest(page, assessmentId);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const testId = new URLSearchParams(window.location.search).get('test');
+  if (testId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    initTestView(testId);
+  } else {
+    renderGeneratorStep();
+    loadDashboard();
+  }
+});
+</script>
+</body>
+</html>
